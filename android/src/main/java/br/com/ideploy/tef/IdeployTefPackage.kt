@@ -1,4 +1,4 @@
-package com.ideploytef
+package br.com.ideploy.tef
 
 import com.facebook.react.TurboReactPackage
 import com.facebook.react.bridge.NativeModule

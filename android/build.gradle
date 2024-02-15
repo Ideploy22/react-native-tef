@@ -44,7 +44,7 @@ def supportsNamespace() {
 
 android {
   if (supportsNamespace()) {
-    namespace "com.ideploytef"
+    namespace "br.com.ideploy.tef"
 
     sourceSets {
       main {
@@ -101,6 +101,11 @@ repositories {
 def kotlin_version = getExtOrDefault("kotlinVersion")
 
 dependencies {
+  implementation project(':elgin-core')
+  implementation project(':elgin-destaxa')
+  implementation project(':elgin-payments')
+  implementation project(':elgin-ppcomp')
+
   // For < 0.71, this will be from the local maven repo
   // For > 0.71, this will be replaced by `com.facebook.react:react-android:$version` by react gradle plugin
   //noinspection GradleDynamicVersion
@@ -112,6 +117,6 @@ if (isNewArchitectureEnabled()) {
   react {
     jsRootDir = file("../src/")
     libraryName = "IdeployTef"
-    codegenJavaPackageName = "com.ideploytef"
+    codegenJavaPackageName = "br.com.ideploy.tef"
   }
 }
