@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import {
   configTef,
+  onCancel,
   onInitTef,
   payCred,
   payDeb,
@@ -22,16 +23,15 @@ export default function App() {
   const [name, setName] = useState('IdeployTef');
   const [version, setVersion] = useState('1.0.0');
   const [pinpad, setPinpad] = useState('pinpad');
-  const [pinPadText, setPinPadText] = useState('');
   const [typePayment, setTypePayment] = useState('debit' || 'credit' || 'pix');
   const [value, setValue] = useState(100);
   const [doc, setDoc] = useState('49.984.096/0001-69');
 
   const [results, setResults] = useState<
     {
-      messageEgin?: string;
       message: string;
-      type: string;
+      obj: string;
+      what: string;
     }[]
   >([]);
 
@@ -39,7 +39,6 @@ export default function App() {
     configTef({
       doc,
       name,
-      pinPadText,
       pinpad,
       version,
     });
@@ -85,12 +84,6 @@ export default function App() {
             placeholder="Pinpad"
           />
           <TextInput
-            value={pinPadText}
-            style={styles.input}
-            onChangeText={setPinPadText}
-            placeholder="PinPadText"
-          />
-          <TextInput
             style={styles.input}
             value={doc}
             onChangeText={setDoc}
@@ -126,27 +119,33 @@ export default function App() {
               }}
             />
           </View>
-          <Button
-            title="Pay"
-            onPress={() => {
-              if (typePayment === 'debit') {
-                payDeb(value);
-              } else if (typePayment === 'credit') {
-                payCred(value, '1', '1');
-              } else if (typePayment === 'pix') {
-                payPix(value);
-              }
-            }}
-          />
+          <View style={{ flexDirection: 'row' }}>
+            <Button
+              title="     Pay          "
+              onPress={() => {
+                if (typePayment === 'debit') {
+                  payDeb(value);
+                } else if (typePayment === 'credit') {
+                  payCred(value, '1', '1');
+                } else if (typePayment === 'pix') {
+                  payPix(value);
+                }
+              }}
+            />
+            <Button title="Cancelar" color="red" onPress={onCancel} />
+          </View>
         </View>
         <View style={styles.box}>
           <Text>Result: test</Text>
+          <Button
+            title="Clear"
+            onPress={() => {
+              setResults([]);
+            }}
+          />
           <FlatList
             data={results}
             renderItem={({ item, index }) => (
-              // <Text>
-              //   {item.type} - {item.message} - {item.messageEgin}
-              // </Text>
               <View
                 style={{
                   backgroundColor: index % 2 === 0 ? 'gray' : 'black',
@@ -154,9 +153,10 @@ export default function App() {
                   marginVertical: 5,
                 }}
               >
-                <Text style={{ color: 'white' }}>{item.type}</Text>
+                <View style={{ backgroundColor: 'green', padding: 5 }}>
+                  <Text style={{ color: 'white' }}>{item.what}</Text>
+                </View>
                 <Text style={{ color: 'white' }}>{item.message}</Text>
-                <Text style={{ color: 'white' }}>{item.messageEgin}</Text>
               </View>
             )}
             keyExtractor={(_, index) => index.toString()}
