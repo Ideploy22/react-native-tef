@@ -4,12 +4,12 @@ include ':app'
 includeBuild('../node_modules/@react-native/gradle-plugin')
 
 include (':elgin-core')
-project(':elgin-core').projectDir = file('../../libs/hom/elgin-core')
+project(':elgin-core').projectDir = file('../../android/libs/hom/elgin-core')
 include (':elgin-destaxa')
-project(':elgin-destaxa').projectDir = file('../../libs/hom/elgin-destaxa')
+project(':elgin-destaxa').projectDir = file('../../android/libs/hom/elgin-destaxa')
 include (':elgin-payments')
-project(':elgin-payments').projectDir = file('../../libs/hom/elgin-payments')
+project(':elgin-payments').projectDir = file('../../android/libs/hom/elgin-payments')
 include (':elgin-ppcomp')
-project(':elgin-ppcomp').projectDir = file('../../libs/hom/elgin-ppcomp')
+project(':elgin-ppcomp').projectDir = file('../../android/libs/hom/elgin-ppcomp')
 
 

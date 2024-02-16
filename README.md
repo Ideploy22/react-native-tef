@@ -8,11 +8,27 @@ tef elgin
 npm install react-native-ideploy-tef
 ```
 
+## Android
+
+add settings.gradle
+
+ ```gradle
+include (':elgin-core')
+project(':elgin-core').projectDir = file('../node_modules/react-native-ideploy-tef/libs/hom/elgin-core')
+  ```
+
 ## Usage
 
 
 ```js
-import { multiply } from 'react-native-ideploy-tef';
+import {
+  configTef,
+  onCancel,
+  onInitTef,
+  payCred,
+  payDeb,
+  payPix,
+} from 'react-native-ideploy-tef';
 
 // ...
 
