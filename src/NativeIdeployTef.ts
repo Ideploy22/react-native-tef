@@ -10,4 +10,6 @@ export interface Spec extends TurboModule {
   onCancel(): void;
 }
 
-export default TurboModuleRegistry.getEnforcing<Spec>('IdeployTef');
+export default TurboModuleRegistry.getEnforcing<Spec>(
+  'IdeployTef'
+) as Spec | null;

@@ -1,6 +1,6 @@
 {
   "name": "react-native-ideploy-tef",
-  "version": "0.1.0",
+  "version": "0.1.102",
   "description": "tef elgin",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
@@ -163,7 +163,7 @@
     ]
   },
   "codegenConfig": {
-    "name": "RNIdeployTefSpec",
+    "name": "IdeployTef",
     "type": "modules",
     "jsSrcsDir": "src"
   }
