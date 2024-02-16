@@ -10,14 +10,8 @@ export function onInitTef(): void {
   IdeployTef.onInitTef();
 }
 
-export function configTef({
-  name,
-  version,
-  pinpad,
-  pinPadText,
-  doc,
-}: IConfigTef): void {
-  IdeployTef.configTef(name, version, pinpad, pinPadText, doc);
+export function configTef({ name, version, pinpad, doc }: IConfigTef): void {
+  IdeployTef.configTef(name, version, pinpad, doc);
 }
 
 export function payDeb(value: number): void {
@@ -40,4 +34,8 @@ export function payPix(value: number): void {
   let valueToString = (value / 100).toFixed(2).toString();
 
   IdeployTef.payPix(valueToString);
+}
+
+export function onCancel(): void {
+  IdeployTef.onCancel();
 }

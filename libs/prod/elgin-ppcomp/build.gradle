@@ -1,0 +1,2 @@
+configurations.maybeCreate("default")
+artifacts.add("default", file('ppcomp_release-1.29.14.210610.aar'))

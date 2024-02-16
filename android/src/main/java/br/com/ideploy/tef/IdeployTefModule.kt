@@ -11,14 +11,23 @@ import android.os.Handler
 import android.app.Activity
 import android.os.Message
 import android.os.Looper
-import android.widget.Toast
 
-import com.elgin.e1.pagamentos.tef.ElginTef;
+import com.elgin.e1.pagamentos.tef.*
+
+enum class TefWhat(val value: Int) {
+    PROGRESS(1),
+    COLLECT(2),
+    TRANSACTION(3),
+    INFO(4),
+    FINISH(5),
+    INFOPIX(6)
+}
 
 @ReactModule(name = IdeployTefModule.NAME)
 class IdeployTefModule(reactContext: ReactApplicationContext) :
   NativeIdeployTefSpec(reactContext) {
 
+  // val tag = "IDeploy: "
   val context = reactContext as ReactContext
 
   override fun getName(): String {
@@ -28,48 +37,41 @@ class IdeployTefModule(reactContext: ReactApplicationContext) :
   private val mHandler = object : Handler(Looper.getMainLooper()) {
     override fun handleMessage(msg: Message) {
       var value: String? = null
-      var valueEgin: String? = null
+      val params: WritableMap = Arguments.createMap()
+      params.putInt("what", msg.what)
 
       try {
-        value = msg.obj.toString()
-        val params: WritableMap = Arguments.createMap()
-        params.putString("message", value)
-
-        if (msg.what == 1) { // MENSAGEM DE PROGRESSO
-          params.putString("type", "progress")
-          valueEgin = ElginTef.ObterMensagemProgresso()
-          params.putString("messageEgin", valueEgin)
-          sendEvent(params)
-        } else if (msg.what == 2) { // OPÇÃO DE COLETA
-          params.putString("type", "option")
-          valueEgin = ElginTef.ObterOpcaoColeta()
-          params.putString("messageEgin", valueEgin)
-          sendEvent(params)
-        } else if (msg.what == 3) { // DADOS DA TRANSAÇÃO
-          params.putString("type", "transaction")
-          valueEgin = ElginTef.ObterDadosTransacao()
-          sendEvent(params)
-        } else if (msg.what == 4) { // FINALIZAR
-          params.putString("type", "finish")
-          valueEgin = ElginTef.ObterDadosTransacao()
-          sendEvent(params)
-        } else {
-          params.putString("type", "ELSE")
-          sendEvent(params)
+        when (msg.what) {
+          TefWhat.PROGRESS.value -> {
+              value = ElginTef.ObterMensagemProgresso()
+          }
+          TefWhat.COLLECT.value -> {
+              value = ElginTef.ObterOpcaoColeta()
+          }
+          TefWhat.TRANSACTION.value -> {
+              value = ElginTef.ObterMensagemProgresso()
+          }
+            TefWhat.INFO.value -> {
+              value = ElginTef.ObterDadosTransacao()
+          }
+          TefWhat.FINISH.value -> {
+              value = ElginTef.ObterMensagemProgresso()
+          }
+          TefWhat.INFOPIX.value -> {
+              value = msg.obj.toString()
+          }
         }
-      } catch (e: Exception) {
 
+        params.putString("message", value ?: "${msg.obj}")
+        sendEvent(params)
+      } catch (e: Exception) {
+        params.putString("message", e.message)
+        sendEventErro(params)
       }
-      // Adiciona a opção de cancelamento ao builder. Deve ser possível cancelar na maioria das operações.
-      // A situação de captura de DADOS_TRANSACAO é a única a retornar um AlerDialog.Builder null, portanto apenas se o valor retornando não for nulo deve ser mostrado o alert.
     }
   }
 
-  // Example method
-  // See https://reactnative.dev/docs/native-modules-android
-  // override fun multiply(a: Double, b: Double): Double {
-  //   return a * b
-  // }
+
 
   override fun onInitTef() {
     val activity: Activity = getCurrentActivity()!!
@@ -78,11 +80,11 @@ class IdeployTefModule(reactContext: ReactApplicationContext) :
     ElginTef.setHandler(mHandler)
   }
 
-  override fun configTef(name: String, version: String, pinpad: String, pinPadText: String, doc: String) {
-    ElginTef.InformarDadosAutomacao(name, version, pinpad, pinPadText)
+  override fun configTef(name: String, version: String, pinpad: String, doc: String) {
+    ElginTef.InformarDadosAutomacao(name, version, pinpad,  "", "", "")
 
     try{
-      ElginTef.AtivarTerminal(doc);
+      ElginTef.AtivarTerminal(doc)
     }catch(e: Exception){
       val params: WritableMap = Arguments.createMap()
       params.putString("message", e.message)
@@ -113,6 +115,16 @@ class IdeployTefModule(reactContext: ReactApplicationContext) :
   override fun payPix(value: String) {
     try{
       ElginTef.RealizarTransacaoPIX(value)
+    }catch(e: Exception){
+      val params: WritableMap = Arguments.createMap()
+      params.putString("message", e.message)
+      sendEventErro(params)
+    }
+  }
+
+  override fun onCancel(){
+    try{
+      ElginTef.RealizarCancelamentoOperacao()
     }catch(e: Exception){
       val params: WritableMap = Arguments.createMap()
       params.putString("message", e.message)
